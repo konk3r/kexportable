@@ -18,8 +18,8 @@ class ModelGenerationTest {
         private val source = SourceFile.kotlin("Model.kt", """
             package com.casadetasha
 
-            import com.casadetasha.kex.kexportable.annotations.KexportName
-            import com.casadetasha.kex.kexportable.annotations.Kexportable
+            import com.casadetasha.kexp.kexportable.annotations.KexportName
+            import com.casadetasha.kexp.kexportable.annotations.Kexportable
 
             @Kexportable
             class Model {

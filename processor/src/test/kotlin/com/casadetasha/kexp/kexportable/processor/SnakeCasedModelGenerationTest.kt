@@ -17,9 +17,9 @@ class SnakeCasedModelGenerationTest {
             "Model.kt", """
             package snake_case
 
-            import com.casadetasha.kex.kexportable.annotations.KexportName
-            import com.casadetasha.kex.kexportable.annotations.Kexportable
-            import com.casadetasha.kex.kexportable.annotations.Kexportable.NamingConvention.SNAKE_CASE
+            import com.casadetasha.kexp.kexportable.annotations.KexportName
+            import com.casadetasha.kexp.kexportable.annotations.Kexportable
+            import com.casadetasha.kexp.kexportable.annotations.Kexportable.NamingConvention.SNAKE_CASE
 
             @Kexportable(namingConvention = SNAKE_CASE)
             class Model {
