@@ -1,5 +1,6 @@
 package com.casadetasha.kexp.kexportable.processor
 
+import com.casadetasha.kexp.annotationparser.KotlinContainer
 import com.casadetasha.kexp.kexportable.processor.kxt.asNonNullable
 import com.casadetasha.kexp.kexportable.processor.kxt.toTypeName
 import com.squareup.kotlinpoet.*
@@ -10,7 +11,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @OptIn(KotlinPoetMetadataPreview::class)
-class KexportedClassSpecBuilder(private val exportableClasses: Set<ClassData>) {
+class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContainer.KotlinClass>) {
 
     internal fun getClassSpec(kexportableClass: KexportableClass): TypeSpec {
         val classTypeBuilder = TypeSpec.classBuilder(kexportableClass.className)

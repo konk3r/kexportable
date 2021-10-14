@@ -1,31 +1,16 @@
 package com.casadetasha.kexp.kexportable.processor
 
+import com.casadetasha.kexp.annotationparser.KotlinContainer
 import com.casadetasha.kexp.kexportable.processor.KexportableClass.Companion.EXPORT_METHOD_SIMPLE_NAME
-import com.casadetasha.kexp.kexportable.processor.kxt.asNonNullable
-import com.casadetasha.kexp.kexportable.processor.kxt.toTypeName
+import com.casadetasha.kexp.kexportable.processor.kxt.containsMatchingType
+import com.casadetasha.kexp.kexportable.processor.kxt.removeTrailingComma
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.metadata.ImmutableKmProperty
-import com.squareup.kotlinpoet.metadata.ImmutableKmType
 import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
 import com.squareup.kotlinpoet.metadata.isNullable
-import com.squareup.kotlinpoet.metadata.specs.ClassData
-
-private fun StringBuilder.removeTrailingComma() : StringBuilder {
-    val index = lastIndexOf(",")
-    if (index == lastIndex) {
-        deleteCharAt(index)
-    }
-    return this
-}
 
 @OptIn(KotlinPoetMetadataPreview::class)
-private fun Set<ClassData>.containsMatchingType(type: ImmutableKmType): Boolean {
-    return map { KexportableClass(it) }
-        .any { it.sourceClassName == type.toTypeName().asNonNullable() }
-}
-
-@OptIn(KotlinPoetMetadataPreview::class)
-internal class ExportedFunSpecBuilder(private val exportableClasses: Set<ClassData>) {
+internal class KexportedFunSpecBuilder(private val exportableClasses: Set<KotlinContainer.KotlinClass>) {
 
     fun getFunSpec(kexportableClass: KexportableClass): FunSpec {
         val statementParser = MethodStatementParser(exportableClasses, kexportableClass)
@@ -36,7 +21,7 @@ internal class ExportedFunSpecBuilder(private val exportableClasses: Set<ClassDa
             .build()
     }
 
-    private class MethodStatementParser(private val exportableClasses: Set<ClassData>,
+    private class MethodStatementParser(private val exportableClasses: Set<KotlinContainer.KotlinClass>,
                                         private val kexportableClass: KexportableClass
     ) {
         private val stringBuilder = StringBuilder()
