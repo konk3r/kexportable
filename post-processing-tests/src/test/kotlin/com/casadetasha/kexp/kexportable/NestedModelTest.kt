@@ -37,13 +37,13 @@ class NestedModelTest {
     }
 
     @Test
-    fun `exports a nested exportable model as the exported version`() {
+    fun `kexports a nested exportable model as the exported version`() {
         val parentModel = ParentModel(SingleValueModel("Hulkamania 97, BRUTHA!"))
         assertThat(parentModel.kexport().nestedModel).isInstanceOf(KexportedSingleValueModel::class)
     }
 
     @Test
-    fun `exports nested fields properly`() {
+    fun `kexports nested fields properly`() {
         val parentModel = ParentModel(SingleValueModel("Hulkamania 98, BRUTHA!"))
         val nestedStringValue = parentModel.kexport().nestedModel.stringValue
         assertThat(nestedStringValue).isEqualTo("Hulkamania 98, BRUTHA!")

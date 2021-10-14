@@ -10,22 +10,22 @@ import org.junit.Test
 class SingleModelTest {
     @Test
     fun `exported model is not null`() {
-        val exportedModel = MultiValueModel("", true, 42, null).kexport()
-        assertThat(exportedModel).isNotNull()
+        val kexportedModel = MultiValueModel("", true, 42, null).kexport()
+        assertThat(kexportedModel).isNotNull()
     }
 
     @Test
     fun `exported values match the original values`() {
-        val exportedModel = MultiValueModel(
+        val kexportedModel = MultiValueModel(
             stringValue = "testing testables",
             booleanValue = true,
             intValue = 37,
             optionalValue = null
         ).kexport()
 
-        assertThat(exportedModel.stringValue).isEqualTo("testing testables")
-        assertThat(exportedModel.booleanValue).isEqualTo(true)
-        assertThat(exportedModel.intValue).isEqualTo(37)
-        assertThat(exportedModel.optionalValue).isNull()
+        assertThat(kexportedModel.stringValue).isEqualTo("testing testables")
+        assertThat(kexportedModel.booleanValue).isEqualTo(true)
+        assertThat(kexportedModel.intValue).isEqualTo(37)
+        assertThat(kexportedModel.optionalValue).isNull()
     }
 }

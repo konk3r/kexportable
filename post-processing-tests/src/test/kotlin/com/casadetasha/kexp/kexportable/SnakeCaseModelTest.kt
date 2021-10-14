@@ -22,13 +22,13 @@ class SnakeCaseModelTest {
     }
 
     @Test
-    fun `exported model is not null`() {
+    fun `kexported model is not null`() {
         val snakeCaseModel = SnakeCaseModel().kexport()
         assertThat(snakeCaseModel).isNotNull()
     }
 
     @Test
-    fun `exported values match the original values`() {
+    fun `kexported values match the original values`() {
         val parsingModel = SnakeCaseModel(
             testVal = "This should be snake case",
             annotatedTestVal = "This should be \"changed_name\"",

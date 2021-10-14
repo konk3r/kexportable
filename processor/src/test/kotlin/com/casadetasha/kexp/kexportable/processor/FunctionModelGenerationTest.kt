@@ -13,7 +13,7 @@ import org.intellij.lang.annotations.Language
 import kotlin.test.Test
 import kotlin.test.BeforeTest
 
-class ModelGenerationTest {
+class FunctionModelGenerationTest {
     companion object {
         private val source = SourceFile.kotlin("Model.kt", """
             package com.casadetasha
@@ -23,10 +23,11 @@ class ModelGenerationTest {
 
             @Kexportable
             class Model {
-                var testVal: String = ""
-                @KexportName("export_named_test_val")
-                var exportedNameVal: String? = null
-                @Transient var secretVal: String? = null
+                @Kexportable
+                fun testVal(): String = ""
+                @Kexportable("export_named_test_val")
+                fun exportedNameVal(): String? = null
+                fun secretVal(): String? = null
               }
         """.trimIndent())
 
@@ -42,14 +43,14 @@ class ModelGenerationTest {
             @Serializable
             @SerialName("Model")
             public data class KexportedModel(
+              public val testVal: String,
               @SerialName("export_named_test_val")
-              public val exportedNameVal: String?,
-              public val testVal: String
+              public val exportedNameVal: String?
             )
 
             public fun Model.kexport(): KexportedModel = KexportedModel(
-              exportedNameVal = exportedNameVal,
-              testVal = testVal
+              testVal = testVal(),
+              exportedNameVal = exportedNameVal()
             )
 
         """.trimIndent()
@@ -91,7 +92,7 @@ class ModelGenerationTest {
     }
 
     @Test
-    fun `kexports only fields not annotated with Transient`() {
+    fun `kexports only fields annotated with Kexportable`() {
         assertThat(compilationResult.exitCode).isEqualTo(OK)
         val exportedClass = compilationResult.classLoader.loadClass("com.casadetasha.kexport.KexportedModel")
         assertThat(exportedClass).hasOnlyDeclaredFields("testVal", "exportedNameVal")
