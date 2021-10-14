@@ -1,6 +1,7 @@
 package com.casadetasha.kexp.kexportable.processor
 
 import com.casadetasha.kexp.annotationparser.KotlinContainer
+import com.casadetasha.kexp.annotationparser.KotlinFunction
 import com.casadetasha.kexp.kexportable.annotations.KexportName
 import com.casadetasha.kexp.kexportable.annotations.Kexportable
 import com.casadetasha.kexp.kexportable.annotations.Kexportable.NamingConvention.AS_WRITTEN
@@ -41,39 +42,47 @@ internal class KexportableClass(
     val classSimpleName: String = className.simpleName
     private val namingConvention: Kexportable.NamingConvention? = kexportableAnnotation?.namingConvention
 
-    private val defaultSerialName: String? = when(kexportableAnnotation?.namingConvention) {
+    private val defaultSerialName: String? = when (kexportableAnnotation?.namingConvention) {
         AS_WRITTEN -> sourceClassSimpleName
         SNAKE_CASE -> sourceClassSimpleName.toSnakeCase()
         else -> null
     }
-    val serialName : String? = when(kexportableAnnotation?.exportName?.isNotBlank()) {
-            true -> kexportableAnnotation.exportName
-            false ->  defaultSerialName
-            else -> null
+    val serialName: String? = when (kexportableAnnotation?.exportName?.isNotBlank()) {
+        true -> kexportableAnnotation.exportName
+        false -> defaultSerialName
+        else -> null
     }
 
-    val exportableProperties: Sequence<ImmutableKmProperty> = sourceClass.properties
-            .asSequence()
-            .map { it.key }
-            .filter { it.isPublic }
-            .filter { it.isDeclaration }
-            .filterNot { it.isSynthesized }
-            .filterNot { sourceClassData.isPropertyTransient(it) }
+    val exportableProperties: Set<ImmutableKmProperty> = sourceClass.properties
+        .asSequence()
+        .map { it.key }
+        .filter { it.isPublic }
+        .filter { it.isDeclaration }
+        .filterNot { it.isSynthesized }
+        .filterNot { sourceClassData.isPropertyTransient(it) }
+        .toSet()
 
+    val exportableFunctions: Set<KotlinFunction> = sourceClass.getFunctionsAnnotatedWith(Kexportable::class)
+
+    // TODO: Create KotlinProperty to group ImmutableKmProperties and Elements to stop using this hack
     internal fun ImmutableKmProperty.getSerialName(): String {
         return sourceClassData.properties[this]
             ?.allAnnotations
             ?.firstOrNull { it.typeName == KexportName::class.asTypeName() }
             ?.getStringParameter("value")
-            ?: getDefaultSerialName()
+            ?: getDefaultSerialName(this.name)
     }
 
-    private fun ImmutableKmProperty.getDefaultSerialName(): String {
-        return when(namingConvention) {
+    internal fun KotlinFunction.getSerialName(): String = (getAnnotation(Kexportable::class) as Kexportable).exportName
+        .ifBlank { getDefaultSerialName(simpleName) }
+
+    private fun getDefaultSerialName(name: String): String {
+        return when (namingConvention) {
             AS_WRITTEN -> name
             SNAKE_CASE -> name.toSnakeCase()
             else -> throw IllegalStateException(
-                "ExportableClass must be initialized with Exportable annotation to get SerialName")
+                "ExportableClass must be initialized with Exportable annotation to get SerialName"
+            )
         }
     }
 }
