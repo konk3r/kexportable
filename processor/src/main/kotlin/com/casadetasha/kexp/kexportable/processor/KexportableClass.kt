@@ -1,7 +1,7 @@
 package com.casadetasha.kexp.kexportable.processor
 
 import com.casadetasha.kexp.annotationparser.KotlinContainer
-import com.casadetasha.kexp.annotationparser.KotlinFunction
+import com.casadetasha.kexp.annotationparser.KotlinValue.KotlinFunction
 import com.casadetasha.kexp.kexportable.annotations.KexportName
 import com.casadetasha.kexp.kexportable.annotations.Kexportable
 import com.casadetasha.kexp.kexportable.annotations.Kexportable.NamingConvention.AS_WRITTEN
@@ -53,14 +53,16 @@ internal class KexportableClass(
         else -> null
     }
 
-    val exportableProperties: Set<ImmutableKmProperty> = sourceClass.properties
+    val kmProperties: Set<ImmutableKmProperty> = sourceClass.kotlinProperties
         .asSequence()
-        .map { it.key }
+        .map { it.property }
         .filter { it.isPublic }
         .filter { it.isDeclaration }
         .filterNot { it.isSynthesized }
         .filterNot { sourceClassData.isPropertyTransient(it) }
         .toSet()
+
+//    val exportableProperties: Set<KotlinProperty> = sourceClass.properties
 
     val exportableFunctions: Set<KotlinFunction> = sourceClass.getFunctionsAnnotatedWith(Kexportable::class)
 

@@ -1,7 +1,7 @@
 package com.casadetasha.kexp.kexportable.processor
 
 import com.casadetasha.kexp.annotationparser.KotlinContainer
-import com.casadetasha.kexp.annotationparser.KotlinFunction
+import com.casadetasha.kexp.annotationparser.KotlinValue.KotlinFunction
 import com.casadetasha.kexp.kexportable.processor.KexportableClass.Companion.EXPORT_METHOD_SIMPLE_NAME
 import com.casadetasha.kexp.kexportable.processor.kxt.containsMatchingType
 import com.casadetasha.kexp.kexportable.processor.kxt.removeTrailingComma
@@ -38,14 +38,14 @@ internal class KexportedFunSpecBuilder(private val exportableClasses: Set<Kotlin
         }
 
         private fun amendSettersForNonKexportedParams(): StringBuilder {
-            kexportableClass.exportableProperties
+            kexportableClass.kmProperties
                 .filterNot { exportableClasses.containsMatchingType(it.returnType) }
                 .forEach { stringBuilder.append(it.asConstructorBlock()) }
             return stringBuilder
         }
 
         private fun amendSettersForKexportedParams(): StringBuilder {
-            kexportableClass.exportableProperties
+            kexportableClass.kmProperties
                 .filter { exportableClasses.containsMatchingType(it.returnType) }
                 .forEach { stringBuilder.append(it.asKexportedConstructorBlock()) }
             return stringBuilder

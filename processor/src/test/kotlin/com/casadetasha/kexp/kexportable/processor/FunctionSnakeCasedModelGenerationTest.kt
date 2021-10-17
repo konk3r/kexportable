@@ -54,8 +54,8 @@ class FunctionSnakeCasedModelGenerationTest {
             )
 
             public fun Model.kexport(): KexportedModel = KexportedModel(
-              exportedNameFun = exportedNameFun(),
               differentNameFun = differentNameFun(),
+              exportedNameFun = exportedNameFun(),
               testFun = testFun()
             )
 

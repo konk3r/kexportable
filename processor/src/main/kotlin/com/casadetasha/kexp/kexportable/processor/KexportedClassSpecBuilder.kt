@@ -1,7 +1,7 @@
 package com.casadetasha.kexp.kexportable.processor
 
 import com.casadetasha.kexp.annotationparser.KotlinContainer
-import com.casadetasha.kexp.annotationparser.KotlinFunction
+import com.casadetasha.kexp.annotationparser.KotlinValue.KotlinFunction
 import com.casadetasha.kexp.kexportable.processor.kxt.asNonNullable
 import com.casadetasha.kexp.kexportable.processor.kxt.toTypeName
 import com.squareup.kotlinpoet.*
@@ -23,7 +23,7 @@ class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContain
                 .build()
             )
 
-        kexportableClass.exportableProperties.forEach {
+        kexportableClass.kmProperties.forEach {
             classTypeBuilder.addProperty(kexportableClass.getExportedPropertySpec(it))
         }
 
@@ -96,7 +96,7 @@ class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContain
 
     private fun KexportableClass.toConstructorSpec(): FunSpec {
         val constructorBuilder = FunSpec.constructorBuilder()
-        exportableProperties.forEach {
+        kmProperties.forEach {
             constructorBuilder.addParameter(getExportDataParameterSpec(it))
         }
         exportableFunctions.forEach {
