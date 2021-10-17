@@ -38,28 +38,28 @@ internal class KexportedFunSpecBuilder(private val exportableClasses: Set<Kotlin
         }
 
         private fun amendSettersForNonKexportedParams(): StringBuilder {
-            kexportableClass.kmProperties
-                .filterNot { exportableClasses.containsMatchingType(it.returnType) }
-                .forEach { stringBuilder.append(it.asConstructorBlock()) }
+            kexportableClass.kexportableProperties
+                .filterNot { exportableClasses.containsMatchingType(it.property.returnType) }
+                .forEach { stringBuilder.append(it.property.asConstructorBlock()) }
             return stringBuilder
         }
 
         private fun amendSettersForKexportedParams(): StringBuilder {
-            kexportableClass.kmProperties
-                .filter { exportableClasses.containsMatchingType(it.returnType) }
-                .forEach { stringBuilder.append(it.asKexportedConstructorBlock()) }
+            kexportableClass.kexportableProperties
+                .filter { exportableClasses.containsMatchingType(it.property.returnType) }
+                .forEach { stringBuilder.append(it.property.asKexportedConstructorBlock()) }
             return stringBuilder
         }
 
         private fun amendSettersForNonKexportedFunctions(): StringBuilder {
-            kexportableClass.exportableFunctions
+            kexportableClass.kexportableFunctions
                 .filterNot { exportableClasses.containsMatchingType(it.returnType) }
                 .forEach { stringBuilder.append(it.asConstructorBlock()) }
             return stringBuilder
         }
 
         private fun amendSettersForKexportedFunctions(): StringBuilder {
-            kexportableClass.exportableFunctions
+            kexportableClass.kexportableFunctions
                 .filter { exportableClasses.containsMatchingType(it.returnType) }
                 .forEach { stringBuilder.append(it.asKexportedConstructorBlock()) }
             return stringBuilder

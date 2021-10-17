@@ -16,13 +16,3 @@ internal fun ClassData.isPropertyTransient(property: ImmutableKmProperty): Boole
         ?.any { it == Transient::class.asTypeName() }
         ?: false
 }
-
-internal fun AnnotationSpec.getStringParameter(key: String): String? {
-    return members.map {
-        val splitMember = it.toString().split("=")
-        Pair(splitMember[0].trim(), splitMember[1].trim())
-    }
-        .firstOrNull { it.first == key }
-        ?.second
-        ?.removeWrappingQuotes()
-}

@@ -2,6 +2,7 @@ package com.casadetasha.kexp.kexportable.processor
 
 import com.casadetasha.kexp.annotationparser.KotlinContainer
 import com.casadetasha.kexp.annotationparser.KotlinValue.KotlinFunction
+import com.casadetasha.kexp.annotationparser.KotlinValue.KotlinProperty
 import com.casadetasha.kexp.kexportable.processor.kxt.asNonNullable
 import com.casadetasha.kexp.kexportable.processor.kxt.toTypeName
 import com.squareup.kotlinpoet.*
@@ -23,11 +24,11 @@ class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContain
                 .build()
             )
 
-        kexportableClass.kmProperties.forEach {
+        kexportableClass.kexportableProperties.forEach {
             classTypeBuilder.addProperty(kexportableClass.getExportedPropertySpec(it))
         }
 
-        kexportableClass.exportableFunctions.forEach {
+        kexportableClass.kexportableFunctions.forEach {
             classTypeBuilder.addProperty(kexportableClass.getExportedFunctionSpec(it))
         }
 
@@ -50,12 +51,12 @@ class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContain
             .build()
     }
 
-    private fun KexportableClass.getExportedPropertySpec(property: ImmutableKmProperty): PropertySpec {
-        val propertyTypeName = property.returnType.toTypeName()
-        val propertyBuilder = PropertySpec.builder(property.name, mapPropertyTypeName(propertyTypeName))
+    private fun KexportableClass.getExportedPropertySpec(property: KotlinProperty): PropertySpec {
+        val propertyTypeName = property.property.returnType.toTypeName()
+        val propertyBuilder = PropertySpec.builder(property.property.name, mapPropertyTypeName(propertyTypeName))
         val serialName = property.getSerialName()
 
-        if (serialName != property.name) {
+        if (serialName != property.property.name) {
             propertyBuilder.addAnnotation(
                 AnnotationSpec.builder(SerialName::class)
                     .addMember("%S", serialName)
@@ -64,7 +65,7 @@ class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContain
         }
 
         return propertyBuilder
-            .initializer(property.name)
+            .initializer(property.property.name)
             .build()
     }
 
@@ -96,10 +97,10 @@ class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContain
 
     private fun KexportableClass.toConstructorSpec(): FunSpec {
         val constructorBuilder = FunSpec.constructorBuilder()
-        kmProperties.forEach {
-            constructorBuilder.addParameter(getExportDataParameterSpec(it))
+        kexportableProperties.forEach {
+            constructorBuilder.addParameter(getExportDataParameterSpec(it.property))
         }
-        exportableFunctions.forEach {
+        kexportableFunctions.forEach {
             constructorBuilder.addParameter(getExportDataParameterSpec(it))
         }
         return constructorBuilder.build()
