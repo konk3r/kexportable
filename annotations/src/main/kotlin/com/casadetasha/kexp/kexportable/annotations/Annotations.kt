@@ -11,5 +11,6 @@ annotation class Kexportable(val exportName: String = "", val namingConvention: 
     }
 }
 
+@Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 annotation class KexportName(val value: String)

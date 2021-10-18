@@ -9,8 +9,6 @@ private val humps = "(?<=.)(?=\\p{Upper})".toRegex()
 
 internal fun String.toSnakeCase() = replace(humps, "_").lowercase()
 
-internal fun String.removeWrappingQuotes(): String = removePrefix("\"").removeSuffix("\"")
-
 internal fun StringBuilder.removeTrailingComma() : StringBuilder {
     val index = lastIndexOf(",")
     if (index == lastIndex) {

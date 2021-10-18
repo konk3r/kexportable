@@ -43,9 +43,9 @@ class FunctionModelGenerationTest {
             @Serializable
             @SerialName("Model")
             public data class KexportedModel(
+              public val testVal: String,
               @SerialName("export_named_test_val")
-              public val exportedNameVal: String?,
-              public val testVal: String
+              public val exportedNameVal: String?
             )
 
             public fun Model.kexport(): KexportedModel = KexportedModel(

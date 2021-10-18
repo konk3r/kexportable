@@ -46,16 +46,16 @@ class FunctionSnakeCasedModelGenerationTest {
             @Serializable
             @SerialName("model")
             public data class KexportedModel(
+              @SerialName("test_fun")
+              public val testFun: String,
               public val exportedNameFun: String?,
               @SerialName("differentName")
-              public val differentNameFun: String?,
-              @SerialName("test_fun")
-              public val testFun: String
+              public val differentNameFun: String?
             )
 
             public fun Model.kexport(): KexportedModel = KexportedModel(
-              differentNameFun = differentNameFun(),
               exportedNameFun = exportedNameFun(),
+              differentNameFun = differentNameFun(),
               testFun = testFun()
             )
 
