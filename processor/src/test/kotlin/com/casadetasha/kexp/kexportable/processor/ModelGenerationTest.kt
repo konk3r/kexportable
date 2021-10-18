@@ -9,10 +9,9 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.OK
 import com.tschuchort.compiletesting.SourceFile
 import kotlinx.serialization.SerialName
-import org.intellij.lang.annotations.Language
 import java.lang.reflect.Method
-import kotlin.test.Test
 import kotlin.test.BeforeTest
+import kotlin.test.Test
 
 class ModelGenerationTest {
     companion object {
@@ -23,38 +22,13 @@ class ModelGenerationTest {
             import com.casadetasha.kexp.kexportable.annotations.Kexportable
 
             @Kexportable
-            class Model(
+            class Model {
                 var testVal: String = ""
-) {
                 @KexportName("export_named_test_val")
                 var exportedNameVal: String? = null
                 @Transient var secretVal: String? = null
               }
         """.trimIndent())
-
-        @Language("kotlin")
-        private val expectedRawOutput: String = """
-            package com.casadetasha.kexport
-
-            import com.casadetasha.Model
-            import kotlin.String
-            import kotlinx.serialization.SerialName
-            import kotlinx.serialization.Serializable
-
-            @Serializable
-            @SerialName("Model")
-            public data class KexportedModel(
-              @SerialName("export_named_test_val")
-              public val exportedNameVal: String?,
-              public val testVal: String
-            )
-
-            public fun Model.kexport(): KexportedModel = KexportedModel(
-              exportedNameVal = exportedNameVal,
-              testVal = testVal
-            )
-
-        """.trimIndent()
     }
 
     private lateinit var compilationResult: KotlinCompilation.Result
@@ -73,15 +47,6 @@ class ModelGenerationTest {
     fun `compiled with exit code OK`() {
         assertThat(compilationResult.exitCode).isEqualTo(OK)
     }
-//
-//    @Test
-//    fun `actual raw output matches expected raw output`() {
-//        assertThat(compilationResult.exitCode).isEqualTo(OK)
-//        val file = compilationResult.sourcesGeneratedByAnnotationProcessor.firstOrNull()
-//        val actualRawOutput = file!!.inputStream().readBytes().toString(Charsets.UTF_8)
-//
-//        assertThat(actualRawOutput).isEqualTo(expectedRawOutput)
-//    }
 
     @Test
     fun `sets source class name as SerialName of exported class`() {
@@ -117,19 +82,6 @@ class ModelGenerationTest {
         assertThat(exportedSerialName.value).isEqualTo("export_named_test_val")
     }
 
-    @Test
-    fun `sets exports fields correctly`() {
-        val exportedClass = compilationResult.classLoader.loadClass("com.casadetasha.kexport.KexportedModel")
-        val constructors = exportedClass.getDeclaredConstructor(String::class.java)
-        val instance = constructors.newInstance("")
-
-        instance.toString()
-//        model.testVal = "mah val"
-//        val kexported = model.kexport()
-
-//        assertThat(kexported).isEqualTo("export_named_test_val")
-    }
-
     private fun Class<*>.getAnnotationMethodForField(fieldName: String): Method {
         val annotatedGetterMethodName = getAnnotatedGetterMethodFromFieldName(fieldName)
         return getDeclaredMethod(annotatedGetterMethodName)
@@ -141,6 +93,7 @@ class ModelGenerationTest {
     }
 }
 
+@Suppress("SameParameterValue")
 private fun Assert<Class<*>>.hasOnlyDeclaredFields(vararg fieldNames : String) = given { clazz ->
     var mayHaveOnlyDeclaredFields = clazz.declaredFields.size == fieldNames.size
     fieldNames.forEach { name ->
