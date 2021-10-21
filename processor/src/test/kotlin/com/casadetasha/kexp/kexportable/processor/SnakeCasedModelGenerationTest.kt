@@ -89,11 +89,6 @@ class SnakeCasedModelGenerationTest {
 
 fun Assert<KotlinCompilation.Result>.hasExitCodeOK() = given { compilationResult ->
     if (compilationResult.exitCode != OK) fail(
-        """
-            Expected exitCode $OK but found ${compilationResult.exitCode}
-            Compiler messages:
-           
-            ${compilationResult.messages}
-            """.trimIndent()
+            "Expected exitCode $OK but found ${compilationResult.exitCode}"
     )
 }
