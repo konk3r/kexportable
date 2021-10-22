@@ -11,7 +11,7 @@ import javax.lang.model.element.TypeElement
 
 @AutoService(Processor::class)
 @SupportedOptions(KexportableProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME)
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 @OptIn(KotlinPoetMetadataPreview::class)
 class KexportableProcessor : AbstractProcessor() {
     private lateinit var kaptKotlinGeneratedDir: String
