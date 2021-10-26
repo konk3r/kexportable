@@ -14,8 +14,7 @@ import org.junit.Test
 
 class NestedModelTest {
     companion object {
-        val expectedJson = """
-            {
+        val expectedJson = """ {
                 "export_named_value": "This name should be snake_case",
                 "nestedMultiValueModel": {
                     "booleanValue": true,
@@ -65,6 +64,7 @@ class NestedModelTest {
                 optionalValue = null
             )
             firstOptionalNestedModel = SingleValueModel("This model shouldn't be null")
+            secondOptionalNestedModel = null
         }.kexport()
 
         val expectedJson = Json.decodeFromString<JsonElement>(expectedJson)

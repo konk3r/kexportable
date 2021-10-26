@@ -4,7 +4,11 @@ import assertk.Assert
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
+import assertk.assertions.isNull
 import assertk.fail
+import com.casadetasha.kexp.kexportable.processor.ktx.compileSource
+import com.casadetasha.kexp.kexportable.processor.ktx.getAnnotationMethodForField
+import com.casadetasha.kexp.kexportable.processor.ktx.hasOnlyDeclaredFields
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.OK
 import com.tschuchort.compiletesting.SourceFile
@@ -15,7 +19,8 @@ import kotlin.test.BeforeTest
 
 class FunctionModelGenerationTest {
     companion object {
-        private val source = SourceFile.kotlin("Model.kt", """
+        private val source = SourceFile.kotlin(
+            "Model.kt", """
             package com.casadetasha
 
             import com.casadetasha.kexp.kexportable.annotations.KexportName
@@ -27,59 +32,24 @@ class FunctionModelGenerationTest {
                 fun testVal(): String = ""
                 @Kexportable("export_named_test_val")
                 fun exportedNameVal(): String? = null
+                @Kexportable("sameNameVal")
+                fun sameNameVal(): String? = null
                 fun secretVal(): String? = null
               }
-        """.trimIndent())
-
-        @Language("kotlin")
-        private val expectedRawOutput: String = """
-            package com.casadetasha.kexport
-
-            import com.casadetasha.Model
-            import kotlin.String
-            import kotlinx.serialization.SerialName
-            import kotlinx.serialization.Serializable
-
-            @Serializable
-            @SerialName("Model")
-            public data class KexportedModel(
-              public val testVal: String,
-              @SerialName("export_named_test_val")
-              public val exportedNameVal: String?
-            )
-
-            public fun Model.kexport(): KexportedModel = KexportedModel(
-              exportedNameVal = exportedNameVal(),
-              testVal = testVal()
-            )
-
         """.trimIndent()
+        )
     }
 
     private lateinit var compilationResult: KotlinCompilation.Result
 
     @BeforeTest
     fun `compile source`() {
-        compilationResult = KotlinCompilation().apply {
-            sources = listOf(source)
-            annotationProcessors = listOf(KexportableProcessor())
-            inheritClassPath = true
-            messageOutputStream = System.out
-        }.compile()
+        compilationResult = compileSource(source)
     }
 
     @Test
     fun `compiled with exit code OK`() {
         assertThat(compilationResult.exitCode).isEqualTo(OK)
-    }
-
-    @Test
-    fun `actual raw output matches expected raw output`() {
-        assertThat(compilationResult.exitCode).isEqualTo(OK)
-        val file = compilationResult.sourcesGeneratedByAnnotationProcessor.firstOrNull()
-        val actualRawOutput = file!!.inputStream().readBytes().toString(Charsets.UTF_8)
-
-        assertThat(actualRawOutput).isEqualTo(expectedRawOutput)
     }
 
     @Test
@@ -95,21 +65,51 @@ class FunctionModelGenerationTest {
     fun `kexports only fields annotated with Kexportable`() {
         assertThat(compilationResult.exitCode).isEqualTo(OK)
         val exportedClass = compilationResult.classLoader.loadClass("com.casadetasha.kexport.KexportedModel")
-        assertThat(exportedClass).hasOnlyDeclaredFields("testVal", "exportedNameVal")
+        assertThat(exportedClass).hasOnlyDeclaredFields("testVal", "exportedNameVal", "sameNameVal")
     }
-}
 
-private fun Assert<Class<*>>.hasOnlyDeclaredFields(vararg fieldNames : String) = given { clazz ->
-    var mayHaveOnlyDeclaredFields = clazz.declaredFields.size == fieldNames.size
-    fieldNames.forEach { name ->
-        mayHaveOnlyDeclaredFields = mayHaveOnlyDeclaredFields and clazz.hasField(name)
+    @Test
+    fun `sets SerialName annotation for KexportNamed properties`() {
+        val exportedClass = compilationResult.classLoader.loadClass("com.casadetasha.kexport.KexportedModel")
+        val fieldAnnotationMethod = exportedClass.getAnnotationMethodForField("exportedNameVal")
+        val exportedSerialName = fieldAnnotationMethod?.getAnnotation(SerialName::class.java)
+
+        assertThat(exportedSerialName).isNotNull()
     }
-    if(mayHaveOnlyDeclaredFields) return else fail(
-        "Expected declared fields to contain exactly ${fieldNames.toSortedSet()}, but found" +
-                " ${clazz.declaredFields.map{ it.name }.toSortedSet()}"
-    )
-}
 
-private fun Class<*>.hasField(fieldName: String): Boolean {
-    return declaredFields.firstOrNull { it.name == fieldName } != null
+    @Test
+    fun `does not set SerialName annotation for non-KexportNamed properties`() {
+        val exportedClass = compilationResult.classLoader.loadClass("com.casadetasha.kexport.KexportedModel")
+        val fieldAnnotationMethod = exportedClass.getAnnotationMethodForField("testVal")
+        val exportedSerialName = fieldAnnotationMethod?.getAnnotation(SerialName::class.java)
+
+        assertThat(exportedSerialName).isNull()
+    }
+
+    @Test
+    fun `does not set SerialName annotation for KexportNamed annotation that matches function name`() {
+        val exportedClass = compilationResult.classLoader.loadClass("com.casadetasha.kexport.KexportedModel")
+        val fieldAnnotationMethod = exportedClass.getAnnotationMethodForField("secretVal")
+        val exportedSerialName = fieldAnnotationMethod?.getAnnotation(SerialName::class.java)
+
+        assertThat(exportedSerialName).isNull()
+    }
+
+    @Test
+    fun `does not set SerialName annotation for KexportNamed properties that match the field name`() {
+        val exportedClass = compilationResult.classLoader.loadClass("com.casadetasha.kexport.KexportedModel")
+        val fieldAnnotationMethod = exportedClass.getAnnotationMethodForField("testVal")
+        val exportedSerialName = fieldAnnotationMethod?.getAnnotation(SerialName::class.java)
+
+        assertThat(exportedSerialName).isNull()
+    }
+
+    @Test
+    fun `sets kexported field SerialName as value of KexportName`() {
+        val exportedClass = compilationResult.classLoader.loadClass("com.casadetasha.kexport.KexportedModel")
+        val fieldAnnotationMethod = exportedClass.getAnnotationMethodForField("exportedNameVal")
+        val exportedSerialName = fieldAnnotationMethod?.getAnnotation(SerialName::class.java)
+
+        assertThat(exportedSerialName?.value).isEqualTo("export_named_test_val")
+    }
 }

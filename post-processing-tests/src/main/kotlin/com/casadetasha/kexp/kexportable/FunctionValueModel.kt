@@ -4,15 +4,16 @@ import com.casadetasha.kexp.kexportable.annotations.Kexportable
 
 @Kexportable
 class FunctionValueModel(
-    private val requiredValueModel: SingleValueModel,
+    private val requiredModelValue: SingleValueModel,
+    private val requiredValue: String = "Boo ya",
     private val optionalValue: String? = ""
     ) {
     @Kexportable
-    fun requiredFunctionValue(): String = "Boo ya"
+    fun requiredFunctionValue(): String = requiredValue
 
     @Kexportable
     fun optionalFunctionValue(): String? = optionalValue
 
     @Kexportable
-    fun nestedFunctionValue(): SingleValueModel = requiredValueModel
+    fun nestedFunctionValue(): SingleValueModel = requiredModelValue
 }

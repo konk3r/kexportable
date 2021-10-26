@@ -27,6 +27,7 @@ class SnakeCaseModelTest {
         assertThat(snakeCaseModel).isNotNull()
     }
 
+    @OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
     @Test
     fun `kexported values match the original values`() {
         val parsingModel = SnakeCaseModel(
