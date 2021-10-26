@@ -53,10 +53,10 @@ internal class KexportableClass(
 
     val kexportableProperties: Set<KotlinProperty> = sourceClass.kotlinProperties
         .asSequence()
-        .filter { it.property.isPublic }
-        .filter { it.property.isDeclaration }
-        .filterNot { it.property.isSynthesized }
-        .filterNot { sourceClassData.isPropertyTransient(it.property) }
+        .filter { it.isPublic }
+        .filter { it.isDeclaration }
+        .filterNot { it.isSynthesized }
+        .filterNot { it.isTransient }
         .toSet()
 
     val kexportableFunctions: Set<KotlinFunction> = sourceClass.getFunctionsAnnotatedWith(Kexportable::class)

@@ -1,7 +1,9 @@
 package com.casadetasha.kexp.kexportable.processor
 
 import com.casadetasha.kexp.annotationparser.KotlinContainer
+import com.casadetasha.kexp.annotationparser.KotlinValue
 import com.casadetasha.kexp.annotationparser.KotlinValue.KotlinFunction
+import com.casadetasha.kexp.annotationparser.KotlinValue.KotlinProperty
 import com.casadetasha.kexp.kexportable.processor.KexportableClass.Companion.EXPORT_METHOD_SIMPLE_NAME
 import com.casadetasha.kexp.kexportable.processor.kxt.containsMatchingType
 import com.casadetasha.kexp.kexportable.processor.kxt.removeTrailingComma
@@ -39,15 +41,15 @@ internal class KexportedFunSpecBuilder(private val exportableClasses: Set<Kotlin
 
         private fun amendSettersForNonKexportedParams(): StringBuilder {
             kexportableClass.kexportableProperties
-                .filterNot { exportableClasses.containsMatchingType(it.property.returnType) }
-                .forEach { stringBuilder.append(it.property.asConstructorBlock()) }
+                .filterNot { exportableClasses.containsMatchingType(it.returnType) }
+                .forEach { stringBuilder.append(it.asConstructorBlock()) }
             return stringBuilder
         }
 
         private fun amendSettersForKexportedParams(): StringBuilder {
             kexportableClass.kexportableProperties
-                .filter { exportableClasses.containsMatchingType(it.property.returnType) }
-                .forEach { stringBuilder.append(it.property.asKexportedConstructorBlock()) }
+                .filter { exportableClasses.containsMatchingType(it.returnType) }
+                .forEach { stringBuilder.append(it.asKexportedConstructorBlock()) }
             return stringBuilder
         }
 
@@ -71,13 +73,13 @@ internal class KexportedFunSpecBuilder(private val exportableClasses: Set<Kotlin
             return stringBuilder
         }
 
-        private fun ImmutableKmProperty.asConstructorBlock() = "\n  $name = ${name},"
+        private fun KotlinProperty.asConstructorBlock() = "\n  $simpleName = ${simpleName},"
 
-        private fun KotlinFunction.asConstructorBlock() = "\n  $simpleName = ${simpleName}(),"
+        private fun KotlinValue.asConstructorBlock() = "\n  $simpleName = ${simpleName}(),"
 
-        private fun ImmutableKmProperty.asKexportedConstructorBlock(): String {
+        private fun KotlinProperty.asKexportedConstructorBlock(): String {
             val nullabilityBlock = if (returnType.isNullable) "?" else ""
-            return "\n  $name = ${name}${nullabilityBlock}.${EXPORT_METHOD_SIMPLE_NAME}(),"
+            return "\n  $simpleName = ${simpleName}${nullabilityBlock}.${EXPORT_METHOD_SIMPLE_NAME}(),"
         }
 
         private fun KotlinFunction.asKexportedConstructorBlock(): String {

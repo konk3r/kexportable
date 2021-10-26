@@ -51,11 +51,11 @@ class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContain
     }
 
     private fun getKexportedPropertySpec(namingConvention: Kexportable.NamingConvention, property: KotlinProperty): PropertySpec {
-        val propertyTypeName = property.property.returnType.toTypeName()
-        val propertyBuilder = PropertySpec.builder(property.property.name, mapPropertyTypeName(propertyTypeName))
+        val propertyTypeName = property.returnType.toTypeName()
+        val propertyBuilder = PropertySpec.builder(property.simpleName, mapPropertyTypeName(propertyTypeName))
         val serialName = property.getSerialName(namingConvention)
 
-        if (serialName != property.property.name) {
+        if (serialName != property.simpleName) {
             propertyBuilder.addAnnotation(
                 AnnotationSpec.builder(SerialName::class)
                     .addMember("%S", serialName)
@@ -64,7 +64,7 @@ class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContain
         }
 
         return propertyBuilder
-            .initializer(property.property.name)
+            .initializer(property.simpleName)
             .build()
     }
 
@@ -105,7 +105,7 @@ class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContain
     }
 
     private fun getKexportPropertyParameterSpec(property: KotlinProperty): ParameterSpec {
-        val propertyTypeName = property.property.returnType.toTypeName()
+        val propertyTypeName = property.returnType.toTypeName()
         val typeName = mapPropertyTypeName(propertyTypeName)
         return ParameterSpec.builder(property.simpleName, typeName)
             .build()
@@ -130,7 +130,7 @@ class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContain
 
 @OptIn(KotlinPoetMetadataPreview::class)
 internal fun KotlinProperty.getSerialName(namingConvention: Kexportable.NamingConvention): String {
-        return propertyData.allAnnotations
+        return annotations
             .firstOrNull { it.typeName == KexportName::class.asTypeName() }
             ?.getParameterValueAsString(KexportName::class.asTypeName(), "value")
             ?: getDefaultSerialName(namingConvention, simpleName)

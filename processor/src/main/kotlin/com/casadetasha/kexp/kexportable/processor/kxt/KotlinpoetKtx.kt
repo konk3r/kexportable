@@ -1,6 +1,5 @@
 package com.casadetasha.kexp.kexportable.processor.kxt
 
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.asTypeName
 import com.squareup.kotlinpoet.metadata.ImmutableKmProperty
 import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
