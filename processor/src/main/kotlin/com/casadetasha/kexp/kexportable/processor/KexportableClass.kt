@@ -21,8 +21,6 @@ internal class KexportableClass(
         private const val EXPORTABLE_CLASS_PREFIX = "Kexported"
     }
 
-    private val sourceClassData = sourceClass.classData
-
     val packageName: String by lazy {
         val sourcePackageName: String = sourceClass.packageName
         val packagePrefix = if (sourcePackageName.isNotBlank()) "$sourcePackageName." else ""
