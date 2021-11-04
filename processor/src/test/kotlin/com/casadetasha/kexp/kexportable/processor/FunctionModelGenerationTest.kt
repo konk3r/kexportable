@@ -1,11 +1,9 @@
 package com.casadetasha.kexp.kexportable.processor
 
-import assertk.Assert
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
-import assertk.fail
 import com.casadetasha.kexp.kexportable.processor.ktx.compileSource
 import com.casadetasha.kexp.kexportable.processor.ktx.getAnnotationMethodForField
 import com.casadetasha.kexp.kexportable.processor.ktx.hasOnlyDeclaredFields
@@ -13,9 +11,8 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.OK
 import com.tschuchort.compiletesting.SourceFile
 import kotlinx.serialization.SerialName
-import org.intellij.lang.annotations.Language
-import kotlin.test.Test
 import kotlin.test.BeforeTest
+import kotlin.test.Test
 
 class FunctionModelGenerationTest {
     companion object {

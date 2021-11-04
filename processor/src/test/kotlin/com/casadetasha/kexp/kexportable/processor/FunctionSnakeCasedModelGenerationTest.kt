@@ -1,11 +1,9 @@
 package com.casadetasha.kexp.kexportable.processor
 
-import assertk.Assert
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
-import assertk.fail
 import com.casadetasha.kexp.kexportable.processor.ktx.compileSource
 import com.casadetasha.kexp.kexportable.processor.ktx.getAnnotationMethodForField
 import com.casadetasha.kexp.kexportable.processor.ktx.hasExitCodeOK
@@ -14,7 +12,6 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode.OK
 import com.tschuchort.compiletesting.SourceFile
 import kotlinx.serialization.SerialName
-import org.intellij.lang.annotations.Language
 import org.junit.Before
 import org.junit.Test
 

@@ -8,7 +8,6 @@ import com.casadetasha.kexp.kexportable.processor.KexportableClass.Companion.EXP
 import com.casadetasha.kexp.kexportable.processor.kxt.containsMatchingType
 import com.casadetasha.kexp.kexportable.processor.kxt.removeTrailingComma
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.metadata.ImmutableKmProperty
 import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
 import com.squareup.kotlinpoet.metadata.isNullable
 
