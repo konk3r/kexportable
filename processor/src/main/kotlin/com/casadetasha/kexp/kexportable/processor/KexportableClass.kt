@@ -3,14 +3,12 @@ package com.casadetasha.kexp.kexportable.processor
 import com.casadetasha.kexp.annotationparser.KotlinContainer
 import com.casadetasha.kexp.annotationparser.KotlinValue.KotlinFunction
 import com.casadetasha.kexp.annotationparser.KotlinValue.KotlinProperty
-import com.casadetasha.kexp.kexportable.annotations.KexportName
 import com.casadetasha.kexp.kexportable.annotations.Kexportable
 import com.casadetasha.kexp.kexportable.annotations.Kexportable.NamingConvention.AS_WRITTEN
 import com.casadetasha.kexp.kexportable.annotations.Kexportable.NamingConvention.SNAKE_CASE
-import com.casadetasha.kexp.kexportable.processor.kxt.isPropertyTransient
 import com.casadetasha.kexp.kexportable.processor.kxt.toSnakeCase
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.metadata.*
+import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
 
 @OptIn(KotlinPoetMetadataPreview::class)
 internal class KexportableClass(

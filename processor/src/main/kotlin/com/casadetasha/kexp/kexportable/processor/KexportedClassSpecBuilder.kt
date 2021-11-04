@@ -10,7 +10,6 @@ import com.casadetasha.kexp.kexportable.processor.kxt.asNonNullable
 import com.casadetasha.kexp.kexportable.processor.kxt.toSnakeCase
 import com.casadetasha.kexp.kexportable.processor.kxt.toTypeName
 import com.squareup.kotlinpoet.*
-import com.squareup.kotlinpoet.metadata.ImmutableKmProperty
 import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
