@@ -50,7 +50,7 @@ class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContain
     }
 
     private fun getKexportedPropertySpec(namingConvention: Kexportable.NamingConvention, property: KotlinProperty): PropertySpec {
-        val propertyTypeName = property.returnType.toTypeName()
+        val propertyTypeName = property.typeName
         val propertyBuilder = PropertySpec.builder(property.simpleName, mapPropertyTypeName(propertyTypeName))
         val serialName = property.getSerialName(namingConvention)
 
