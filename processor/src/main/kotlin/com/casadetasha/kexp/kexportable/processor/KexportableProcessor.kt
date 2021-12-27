@@ -36,7 +36,7 @@ class KexportableProcessor : AbstractProcessor() {
         val kexportedClasses = getClassesAnnotatedWith(Kexportable::class)
         kexportedClasses.forEach { kotlinClass ->
             val kexportableAnnotation = kotlinClass.getAnnotation(Kexportable::class)!!
-            val kexportableClass = KexportableClass(kotlinClass, kexportableAnnotation as Kexportable)
+            val kexportableClass = KexportableClass(kotlinClass, kexportableAnnotation)
 
             KexportableClassFileGenerator(kexportedClasses, kexportableClass).writeToFile(kaptKotlinGeneratedDir)
         }

@@ -4,6 +4,7 @@ import com.casadetasha.kexp.annotationparser.KotlinContainer
 import com.casadetasha.kexp.annotationparser.KotlinValue
 import com.casadetasha.kexp.annotationparser.KotlinValue.KotlinFunction
 import com.casadetasha.kexp.annotationparser.KotlinValue.KotlinProperty
+import com.casadetasha.kexp.annotationparser.kxt.getParameterValueAsString
 import com.casadetasha.kexp.kexportable.annotations.KexportName
 import com.casadetasha.kexp.kexportable.annotations.Kexportable
 import com.casadetasha.kexp.kexportable.processor.kxt.asNonNullable
@@ -129,8 +130,7 @@ class KexportedClassSpecBuilder(private val exportableClasses: Set<KotlinContain
 
 @OptIn(KotlinPoetMetadataPreview::class)
 internal fun KotlinProperty.getSerialName(namingConvention: Kexportable.NamingConvention): String {
-        return annotations
-            .firstOrNull { it.typeName == KexportName::class.asTypeName() }
+        return getAnnotationSpec(KexportName::class)
             ?.getParameterValueAsString(KexportName::class.asTypeName(), "value")
             ?: getDefaultSerialName(namingConvention, simpleName)
 }
