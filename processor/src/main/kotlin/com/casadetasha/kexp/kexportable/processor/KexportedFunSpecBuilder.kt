@@ -21,9 +21,7 @@ internal class KexportedFunSpecBuilder(private val exportableClasses: Set<Kotlin
             .receiver(kexportableClass.sourceClassName)
             .addStatement(statementParser.exportMethodStatement)
             .build()
-    }
-
-    private class KexportKtxFunctionParser(private val exportableClasses: Set<KotlinContainer.KotlinClass>,
+    } private class KexportKtxFunctionParser(private val exportableClasses: Set<KotlinContainer.KotlinClass>,
                                            private val kexportableClass: KexportableClass
     ) {
         private val stringBuilder = StringBuilder()
