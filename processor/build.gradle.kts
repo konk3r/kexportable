@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":kexp:annotation-parser"))
+    implementation("com.casadetasha:annotation-parser:0.1.0")
     implementation(project(":kexp:kexportable:annotations"))
 
     implementation("io.ktor:ktor-serialization:$ktorVersion")
