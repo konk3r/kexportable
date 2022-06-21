@@ -1,8 +1,6 @@
-rootProject.name = "path-to-plunder"
+rootProject.name = "kexportable"
 include(
-    "kexp:petals:annotations",
-    "kexp:petals:post-processing-tests",
-    "kexp:petals:processor",
-    "kexp:kexportable:annotations",
-    "kexp:kexportable:processor",
-    "kexp:kexportable:post-processing-tests")
+    "annotations",
+    "processor",
+    "post-processing-tests",
+)

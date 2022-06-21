@@ -15,8 +15,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":kexp:kexportable:annotations"))
-    kapt(project(":kexp:kexportable:processor"))
+    implementation(project(":annotations"))
+    kapt(project(":processor"))
 
     implementation("io.ktor:ktor-serialization:$ktorVersion")
 
