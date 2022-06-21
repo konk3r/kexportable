@@ -3,8 +3,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.*
 
-
 val ktorVersion: String by project
+val assertKVersion: String by project
 val kotlinVersion: String by project
 val kotlinpoetVersion: String by project
 val googleAutoServiceVersion: String by project
@@ -33,11 +33,8 @@ dependencies {
     implementation("com.google.auto.service:auto-service:$googleAutoServiceVersion")
     kapt("com.google.auto.service:auto-service:$googleAutoServiceVersion")
 
-    implementation("com.squareup:kotlinpoet:1.7.1")
-    implementation("com.squareup:kotlinpoet-metadata:1.9.0")
-
     testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.4.9")
-    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
+    testImplementation("com.willowtreeapps.assertk:assertk-jvm:$assertKVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
 }
 

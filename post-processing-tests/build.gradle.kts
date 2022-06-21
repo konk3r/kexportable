@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val assertKVersion: String by project
 val ktorVersion: String by project
 val kotlinVersion: String by project
 
@@ -20,7 +21,7 @@ dependencies {
 
     implementation("io.ktor:ktor-serialization:$ktorVersion")
 
-    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.24")
+    testImplementation("com.willowtreeapps.assertk:assertk-jvm:$assertKVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
 }
 
